@@ -1,0 +1,11 @@
+# OS generated files #
+######################
+.DS_Store
+.DS_Store?
+**/.DS_Store
+**/.DS_Store?
+main
+test.xml
+*.so
+node_modules
+/uploads/*.gpx

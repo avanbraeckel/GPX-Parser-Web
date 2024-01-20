@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>GPS Data Viewer</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Views and manipulates the data in uploaded .gpx files - CIS*2750">
+    <meta name="keywords" content="gpx, gps, data">
+    <meta name="author" content="Austin Van Braeckel">
+    <!-- Load jquery, bootstrap -->
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh2U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" type="text/css" href="/style.css">
+    <!-- Custom CSS End -->
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico"/> <!-- Icon -->
+</head>
+<body>
+    <!-- <h3>Download test</h3>
+    If the A3 stub is running and simple.gpx exists in the uploads/ directory on the server, then clicking on the link below will download it from the server.<br>
+    <a href="simple.gpx" download ">simple.gpx</a>
+    <p></p>
+
+    <hr>
+    <div id="blah">I am blah</div>
+    <hr>
+    <form ref='someform'
+          id='someform'>
+          <div class="form-group">
+                <label for="entryBox">Last Name</label>
+                <input type="text" class="form-control" id="entryBox" value="Value" placeholder="Placeholder">
+          </div>
+        <div class="form-group">
+            <input type='submit' class="btn btn-secondary">
+        </div>
+    </form>
+
+    <form ref='uploadForm' id='uploadForm' action='/upload' method='post' encType="multipart/form-data">
+      <div class="form-group">
+      	<input type="file" name="uploadFile" class="btn btn-secondary">
+      	<input type='submit' value='Upload' class="btn btn-secondary">
+      </div>
+`   </form>
+    -->
+    <br> <!-- Skip a line to make it look a bit nicer -->
+    <div id="title-area">
+        <h1>GPS Data Viewer</h1>
+        <h3>By: Austin Van Braeckel</h3>
+    <div>
+    <br> <!-- Skip a line to make it look a bit nicer -->
+    
+    <hr>
+    <br>
+    <h2>File Log</h2>
+    <div id="file-log-panel" class="scrollable table log-table-bg log-table">
+        <table id="file-log-table" class="custom-table">
+            <col span="1" class="td-wrap">
+            <thead>
+                <tr>
+                    <th class="no-wrap"><b>FILE NAME</b><br> (click to download)</th>
+                    <th class="no-wrap"><b>VERSION</b></th>
+                    <th class="no-wrap"><b>CREATOR</b></th>
+                    <th><b>NUMBER OF WAYPOINTS</b></th>
+                    <th><b>NUMBER OF ROUTES</b></th>
+                    <th><b>NUMBER OF TRACKS</b></th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Will add the files and their data from JS -->
+            </tbody>
+        </table>
+    </div>
+    <form id='uploadForm' action='/upload' method='post' encType="multipart/form-data">
+        <div class="form-group center-align">
+            <input id="upload-file-select" type="file" name="uploadFile" class="btn btn-secondary">
+            <input id="upload-file-btn" type='submit' value='Upload File' class="btn btn-secondary">
+        </div>
+    </form>
+    <br> <!-- Skip a line to make it look a bit nicer -->
+    
+    <hr>
+    <h2>File View</h2>
+    <br>
+    <h3>Select A File</h3>
+    <div id="gpx-view-dropdown" class="center-align">
+        <select id="gpx-view-select" class="custom-select center-align">
+            <!-- Will add the files and their data from JS -->
+        </select>
+    </div>
+    <div id="gpx-view-panel" class="scrollable table log-table-bg gpx-view-table">
+        <table id="gpx-view-table" class="custom-table log-table-bg">
+            <col span="1" class="td-wrap">
+            <thead>
+                <tr>
+                    <th class="no-wrap"><b>COMPONENT</b></th>
+                    <th class="no-wrap"><b>NAME</b></th>
+                    <th class="no-wrap"><b>NUMBER OF<br>POINTS</b></th>
+                    <th class="no-wrap"><b>LENGTH</b></th>
+                    <th class="no-wrap"><b>LOOP</b></th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Will add the files and their data from JS -->
+            </tbody>
+        </table>
+    </div>
+    <h3>Select A Route/Track</h3>
+    <div id="routes-and-tracks-dropdown" class="center-align">
+        <select id="routes-and-tracks-select" class="custom-select center-align">
+            <!-- Will add the files and their data from JS -->
+        </select>
+    </div>
+    <br>
+    <form method='get'> <!-- SHOW OTHER DATA -->
+        <div class="form-group center-align">
+            <input id="show-other-data-btn" type='button' value='Show Other Data' class="btn btn-secondary">
+        </div>
+    </form>
+    <form method='get'> <!-- RENAME -->
+        <div class="form-group center-align">
+            <input id="rename-field" class="custom-text-input" type="text" name="newName" class="btn btn-secondary">
+            <input id="rename-btn" type="button" value="Rename" class="btn btn-secondary">
+        </div>
+    </form>
+    <br>
+    <h3>Add Route</h3>
+    <form method='get'> <!-- ADD ROUTE -->
+        <div class="form-group center-align">
+            <label for="add-route-name">Name:  </label>
+            <input id="add-route-name" class="custom-text-input" type="text" name="addRouteName" class="btn btn-secondary">
+        </div>
+        <div class="form-group center-align">
+            <label for="add-route-numWpts">Number of Waypoints:  </label>
+            <input id="add-route-numWpts" class="custom-text-input" type="text" name="addRouteNumWpts" class="btn btn-secondary">
+        </div>
+        <div class="form-group center-align">
+            <label for="add-route-lats">Latitudes:  </label>
+            <input id="add-route-lats" class="custom-text-input" type="text" name="addRouteLats" class="btn btn-secondary">
+        </div>
+        <div class="form-group center-align">
+            <label for="add-route-lons">Longitudes:  </label>
+            <input id="add-route-lons" class="custom-text-input" type="text" name="addRouteLons" class="btn btn-secondary">
+        </div>
+        <div class="form-group center-align">
+            <input id="add-route-instructions-btn" type="button" value="Instructions" class="btn">
+            <input id="add-route-btn" type="button" value="Add Route" class="btn btn-secondary">
+        </div>
+    </form>
+    <br>
+
+    <hr>
+    <br>
+    <h2>Create GPX Doc</h2>
+    <br>
+    <form method='get'> <!-- CREATE GPX -->
+        <div class="form-group center-align">
+            <label for="create-gpx-name">Filename:  </label>
+            <input id="create-gpx-name" class="custom-text-input" type="text" name="createGpxName" class="btn btn-secondary">
+            <label class="file-ext">.gpx</label>
+        </div>
+        <div class="form-group center-align">
+            <label for="create-gpx-version">Version:  </label>
+            <input id="create-gpx-version" class="custom-text-input" type="text" name="createGpxVersion" class="btn btn-secondary">
+        </div>
+        <div class="form-group center-align">
+            <label for="create-gpx-creator">Creator:  </label>
+            <input id="create-gpx-creator" class="custom-text-input" type="text" name="createGpxCreator" class="btn btn-secondary">
+        </div>
+        <div class="form-group center-align">
+            <input id="create-gpx-btn" type="button" value="Create GPX" class="btn btn-secondary">
+        </div>
+    </form>
+    <br>
+    <hr>
+    <br>
+    <h2>Find Path</h2>
+    <br>
+    <form method='get'> <!-- ADD ROUTE -->
+        <div class="form-group center-align">
+            <label for="find-path-startLat">Starting Latitude:  </label>
+            <input id="find-path-startLat" class="custom-text-input" type="text" name="findPathStartLat" class="btn btn-secondary">
+            <br>
+            <label for="find-path-startLon">Starting Longitude:  </label>
+            <input id="find-path-startLon" class="custom-text-input" type="text" name="findPathStartLon" class="btn btn-secondary">
+        </div>
+        <div class="form-group center-align">
+            <label for="find-path-endLat">Ending Latitude:  </label>
+            <input id="find-path-endLat" class="custom-text-input" type="text" name="findPathEndLat" class="btn btn-secondary">
+            <br>
+            <label for="find-path-endLon">Ending Longitude:  </label>
+            <input id="find-path-endLon" class="custom-text-input" type="text" name="findPathEndLon" class="btn btn-secondary">
+        </div>
+        <div class="form-group center-align">
+            <label for="find-path-delta">Comparison<br>Accuracy (delta):  </label>
+            <input id="find-path-delta" class="custom-text-input" type="text" name="findPathDelta" class="btn btn-secondary">
+        </div>
+        <div class="form-group center-align">
+            <input id="find-path-btn" type="button" value="Find Path" class="btn btn-secondary">
+        </div>
+    </form>
+    <br>
+    <h3>Paths Found</h3>
+    <div id="path-view-panel" class="scrollable table log-table-bg gpx-view-table">
+        <table id="path-view-table" class="custom-table log-table-bg">
+            <col span="1" class="td-wrap">
+            <thead>
+                <tr>
+                    <th class="no-wrap"><b>COMPONENT</b></th>
+                    <th class="no-wrap"><b>NAME</b></th>
+                    <th class="no-wrap"><b>NUMBER OF<br>POINTS</b></th>
+                    <th class="no-wrap"><b>LENGTH</b></th>
+                    <th class="no-wrap"><b>LOOP</b></th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Will add the files and their data from JS -->
+            </tbody>
+        </table>
+    </div>
+    <br>
+    <hr>
+    <br>
+    <h2>Number of Tracks/Routes</h2>
+    <h3>With a Specified Length</h3>
+    <br>
+    <form method='get'> <!-- GET NUMBER OF ROUTES/TRACKS WITH SPECIFIED LENGTH -->
+        <div class="form-group center-align">
+            <label for="length-field">Length (m):  </label>
+            <input id="length-field" class="custom-text-input" type="text" name="lengthField" class="btn btn-secondary">
+            <input id="length-btn" type="button" value="Get Number of Routes/Tracks" class="btn btn-secondary">
+        </div>
+    </form>
+    <br>
+    <hr>
+    <hr>
+    <br>
+    <h1>Database Operations</h1>
+    <br>
+    <h3>Connect to a Database</h3>
+    <form method='get'> <!-- CONNECT TO DATABASE -->
+        <div class="form-group center-align">
+            <label for="dbconnect-username">Username:  </label>
+            <input id="dbconnect-username" class="custom-text-input" type="text" name="dbconnectUsername" class="btn btn-secondary">
+        </div>
+        <div class="form-group center-align">
+            <label for="dbconnect-password">Password:  </label>
+            <input id="dbconnect-password" class="custom-text-input" type="password" name="dbconnectPassword" class="btn btn-secondary">
+        </div>
+        <div class="form-group center-align">
+            <label for="dbconnect-database">Database Name:  </label>
+            <input id="dbconnect-database" class="custom-text-input" type="text" name="dbconnectDatabase" class="btn btn-secondary">
+        </div>
+        <div class="form-group center-align">
+            <input id="dbconnect-btn" type="button" value="Login" class="btn btn-secondary">
+        </div>
+    </form>
+    <br>
+    <h3>Actions</h3>
+    <form method='get'>
+        <div class="form-group center-align">
+            <input id="store-all-files-btn" type="button" value="Store All Files" class="btn btn-secondary">
+        </div>
+    </form>
+    <form method='get'>
+        <div class="form-group center-align">
+            <input id="clear-all-data-btn" type="button" value="Clear All Data" class="btn btn-secondary">
+        </div>
+    </form>
+    <form method='get'>
+        <div class="form-group center-align">
+            <input id="dbstatus-btn" type="button" value="Display DB Status" class="btn btn-secondary">
+        </div>
+    </form>
+    <br>
+    <hr>
+    <h2>Queries</h2>
+    <br>
+    <h3>File Selector</h3>
+    <div class="form-group center-align">
+        <select id="query-file-select" class="custom-select center-align">
+            <!-- Will add the files and their data from JS -->
+        </select>
+    </div>
+    <br>
+    <h3>Route Selector</h3>
+    <div class="form-group center-align">
+        <select id="query-route-select" class="custom-select center-align">
+            <!-- Will add the files and their data from JS -->
+        </select>
+    </div>
+    <br>
+    <h3>When applicable, provide information sorted by:</h3>
+        <div class="form-group center-align">
+            <label for="query-name-radio">Route Name</label>
+            <input id="query-name-radio" type="radio" name="query-sorting" value="Query Sorting">
+            <br>
+            <label for="query-length-radio">Route Length</label>
+            <input id="query-length-radio" type="radio" name="query-sorting" value="Query Sorting">
+        </div>
+    <hr>
+    <form id="query-selection-form" method='get'>
+        <div class="form-group center-align">
+            <h3>1  -  Display all routes</h3>
+            <label for="query1-radio">Select this query</label>
+            <input id="query1-radio" type="radio" name="query-select" value="Query 1">
+        </div>
+        <div class="form-group center-align">
+            <p>(Requires the selection of sorting results to be by either name or length)</p>
+        </div>
+        <hr>
+        <br>
+        <div class="form-group center-align">
+            <h3>2  -  Display the routes from a specific file</h3>
+            <label for="query2-radio">Select this query</label>
+            <input id="query2-radio" type="radio" name="query-select" value="Query 2">
+        </div>
+        <div class="form-group center-align">
+            <p>(Requires the selection of a file)</p>
+        </div>
+        <div class="form-group center-align">
+            <p>(Requires the selection of sorting results to be by either name or length)</p>
+        </div>
+        <hr>
+        <br>
+        <div class="form-group center-align">
+            <h3>3  -  Display all points of a specific route</h3>
+            <h4>ordered by point index</h4>
+            <label for="query3-radio">Select this query</label>
+            <input id="query3-radio" type="radio" name="query-select" value="Query 3">
+        </div>
+        <div class="form-group center-align">
+            <p>(Requires the selection of a route)</p>
+        </div>
+        <hr>
+        <br>
+        <div class="form-group center-align">
+            <h3>4  -  Display all points from a specific file</h3>
+            <label for="query4-radio">Select this query</label>
+            <input id="query4-radio" type="radio" name="query-select" value="Query 4">
+        </div>
+        <div class="form-group center-align">
+            <p>(Requires the selection of a file)</p>
+        </div>
+        <div class="form-group center-align">
+            <p>(Requires the selection of sorting results to be by either name or length)</p>
+        </div>
+        <hr>
+        <br>
+        <div class="form-group center-align">
+            <h3>5  -  Display the N shortest/longest routes from a specific file</h3>
+            <label for="query5-radio">Select this query</label>
+            <input id="query5-radio" type="radio" name="query-select" value="Query 5">
+        </div>
+        <div class="form-group center-align">
+            <label for="query-num-routes-field">N (positive integer):  </label>
+            <input id="query-num-routes-field" class="custom-text-input" type="text" name="numRoutes" class="btn btn-secondary">
+        </div>
+        <h4>The type of routes that are desired:</h4>
+        <div class="form-group center-align">
+            <label for="query-short-radio">Shortest</label>
+            <input id="query-short-radio" type="radio" name="query-short-or-long-routes" value="Query Short Routes">
+            <br>
+            <label for="query-long-radio">Longest</label>
+            <input id="query-long-radio" type="radio" name="query-short-or-long-routes" value="Query Long Routes">
+        </div>
+        <div class="form-group center-align">
+            <p>(Requires a selection of sorting results by route name or route length)</p>
+        </div>
+        <hr>
+        <br>
+        <div class="form-group center-align">
+            <input id="execute-query-btn" type="button" value="Execute Query" class="btn btn-secondary">
+        </div>    
+    </form>
+    <br>
+    <h3>Query Results</h3>
+    <div id="query-view-panel" class="scrollable table log-table-bg gpx-view-table">
+        <table id="query-view-table" class="custom-table log-table-bg">
+            <col span="1" class="td-wrap">
+            <thead>
+                <!-- will add table headings from JS-->
+            </thead>
+            <tbody>
+                <!-- Will add the files and their data from JS -->
+            </tbody>
+        </table>
+    </div>
+    <br>
+    <hr>
+    <br>
+
+    <!-- Leave me at the bottom of body -->
+    <script src="/index.js"></script>
+</body>
+</html>
+
+
+
+
+
+
+
